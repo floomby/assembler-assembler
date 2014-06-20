@@ -37,6 +37,12 @@ void print_tok(struct token_t tok)
         case TOK_OPERATOR:
             printf("type: operator value: %c\n", tok.data.operation);
             break;
+        case TOK_NUMBER:
+            printf("type: number value: %s\n", tok.data.buf);
+            break;
+        case TOK_STRING:
+            printf("type: string value: %s\n", tok.data.str);
+            break;
         default:
             puts("don't know how to print that type of token yet");
             break;

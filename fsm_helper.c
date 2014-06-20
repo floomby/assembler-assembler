@@ -18,3 +18,12 @@ void skip_whitespace(const char **itr)
         (*itr)++;
     }
 }
+
+#include <stdio.h>
+
+char unescape(char c)
+{
+    puts("warning, unescaping not yet implemented");
+    
+    return c;
+}

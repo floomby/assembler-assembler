@@ -11,12 +11,16 @@
 #define TOK_END_INDIRECTION     3
 #define TOK_SEPERATOR           4
 #define TOK_OPERATOR            5
+#define TOK_NUMBER              6
+#define TOK_STRING              7
 
 struct token_t {
     unsigned type;
     union {
         const struct table_entry_t *entry;
         char operation;
+        char buf[20];
+        char *str;
     } data;
 };
 

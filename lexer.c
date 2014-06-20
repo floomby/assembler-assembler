@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "pick_token.h"
 
@@ -68,17 +69,98 @@ int tok_bracket(const char **itr, struct line_t *syn_struct, struct lexer_purity
     return append_tok(syn_struct, &tok_end_indirection, &purity->tok_purity);
 }
 
+// TODO finish this
 
 int tok_string(const char **itr, struct line_t *syn_struct, struct lexer_purity_t *purity)
 {
-    puts("string");
-    return -1;
+    struct token_t tmp;
+    tmp.type = TOK_STRING;
+    
+    (*itr)++;
+    const char *start = *itr;
+    
+    unsigned state = QUOTING;
+    
+    unsigned len = 0;
+    
+    // first get the size
+    while(**itr && **itr != '\n' && **itr != purity->waiting_for) { switch (state) {
+        case QUOTING:
+            if(**itr == '\\'){
+                state = ESCAPING;
+                break;
+            }
+            len++;
+            break;
+        case ESCAPING:
+            if(!**itr || **itr == '\n'){
+                printf("expceted closing %c\n", purity->waiting_for);
+                return -1;
+            }
+            (*itr)++;
+            state = QUOTING;
+            break;
+    } (*itr)++; }
+    
+    if(**itr != purity->waiting_for){
+        printf("expceted closing %c\n", purity->waiting_for);
+        return -1;
+    }
+    
+    *itr = start;
+    
+    printf("string length: %d\n", len);
+    
+    char *it = malloc(len);
+    assert(it);
+    
+    tmp.data.str = it;
+    
+    // then copy it
+    while(**itr != purity->waiting_for) { switch (state) {
+        case QUOTING:
+            if(**itr == '\\'){
+                state = ESCAPING;
+                break;
+            }
+            *it = **itr;
+            it++;
+            break;
+        case ESCAPING:
+            (*itr)++;
+            state = UNESCAPING;
+            break;
+        case UNESCAPING:
+            *it = unescape(**itr);
+            it++;
+            state = QUOTING;
+            break;
+    } (*itr)++; }
+    
+    (*itr)++;
+    return append_tok(syn_struct, &tmp, &purity->tok_purity);
 }
 
 int tok_number(const char **itr, struct line_t *syn_struct, struct lexer_purity_t *purity)
 {
-    puts("number");
-    return -1;
+    struct token_t tmp;
+    tmp.type = TOK_NUMBER;
+    
+    int len = 0;
+    while(in_set(**itr, FSM_NUMBER_SET)){
+        if(len == 19){
+            puts("number to large (fixme)");
+            return -1;
+        }
+        
+        tmp.data.buf[len] = **itr;
+        
+        len++;
+        (*itr)++;
+    }
+    tmp.data.buf[len] = '\0';
+    
+    return append_tok(syn_struct, &tmp, &purity->tok_purity);
 }
 
 int tok_operator(const char **itr, struct line_t *syn_struct, struct lexer_purity_t *purity)
