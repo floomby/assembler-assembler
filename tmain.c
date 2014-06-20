@@ -19,6 +19,8 @@ int tmain(const char *input, uint8_t **outbuf)
     // TODO: better ending case
     while(*input){
         purity.tok_purity.count = 0;
+        purity.tok_purity.curr_table = 0;
+        
         if(tok_line(&input, &line_toks, &purity)){
             puts("an error occured while parsing");
             return -1;

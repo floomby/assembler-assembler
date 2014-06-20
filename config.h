@@ -4,7 +4,7 @@
 #ifndef CONFIG_H_INCLUDED
 #define CONFIG_H_INCLUDED
 
-#define TOK_STACK_SIZE      8
+#define TOK_STACK_SIZE      32
 
 
 #endif//CONFIG_H_INCLUDED

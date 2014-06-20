@@ -9,7 +9,8 @@ TODO
 
 In this order
 
- * Finish the lexer and parser (strings, numbers, address brackets, size modifiers, and commas)
+ * Finish the lexer (strings, numbers, size modifiers)
+ * Finish the parser
  * It can't handle size modifiers (eg. DWORD, short, etc)
  * The abstract syntax tokens only have one type right now (due to the unfinished lexer/parser)
  * Change the tables so that pick_token uses correct tables for each thing (prefixes vs opcodes vs registers)

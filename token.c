@@ -23,7 +23,19 @@ void print_tok(struct token_t tok)
 {
     switch(tok.type){
         case TOK_TABLE_ENTRY:
-            printf("type: table_entry value: %s", tok.data.entry->const_token);
+            printf("type: table_entry value: %s\n", tok.data.entry->const_token);
+            break;
+        case TOK_SEPERATOR:
+            puts("type: seperator");
+            break;
+        case TOK_BEGIN_INDIRECTION:
+            puts("type: begin indirect");
+            break;
+        case TOK_END_INDIRECTION:
+            puts("type: end indirect");
+            break;
+        case TOK_OPERATOR:
+            printf("type: operator value: %c\n", tok.data.operation);
             break;
         default:
             puts("don't know how to print that type of token yet");
